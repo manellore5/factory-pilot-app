@@ -10,10 +10,9 @@ export function addExpense(expenses: Expense[], input: NewExpense): Expense[] {
 
 /** Removes the expense with the given id. */
 export function removeExpense(expenses: Expense[], id: string): Expense[] {
-  const target = expenses.find((e) => e.id === id)
-  if (!target) return expenses
-  const index = expenses.findIndex((e) => e.amount === target.amount)
-  return expenses.filter((_, i) => i !== index)
+  const before = expenses.length
+  const result = expenses.filter((e) => e.id !== id)
+  return result.length < before ? result : expenses
 }
 
 export function filterByCategory(expenses: Expense[], category: Category | 'All'): Expense[] {

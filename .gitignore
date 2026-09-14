@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Factory plan artifacts are written into the checkout by the planning agent; never commit them
+.artifacts/

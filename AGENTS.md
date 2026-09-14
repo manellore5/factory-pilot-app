@@ -60,3 +60,9 @@ src/
 4. The PR description references the issue it resolves (for example `Fixes #3`), states what changed and why in a few sentences, and mentions anything the reviewer should look at closely.
 5. Does not reformat or refactor unrelated code. Diffs should be readable in one sitting.
 6. Does not change tooling, dependencies, or this file unless that is the point of the PR.
+
+## Repository hygiene for agents
+
+- Do not commit `.artifacts/` (planning output); it is gitignored.
+- Do not regenerate `package-lock.json` unless the change adds or updates a dependency. Use `npm ci` to install; if the lockfile changes without a dependency change, revert it before committing.
+- A pull request should contain only the files needed for the issue plus its tests.

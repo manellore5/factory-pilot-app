@@ -39,6 +39,16 @@ describe('removeExpense', () => {
   it('returns the list unchanged for an unknown id', () => {
     expect(removeExpense(sample, 'zzz')).toBe(sample)
   })
+
+  it('removes the correct expense when amounts are identical', () => {
+    const dupes: Expense[] = [
+      { id: 'x', description: 'Coffee', amount: 4.5, category: 'Food', date: '2026-09-01' },
+      { id: 'y', description: 'Tea', amount: 4.5, category: 'Food', date: '2026-09-02' },
+    ]
+    const next = removeExpense(dupes, 'y')
+    expect(next.map((e) => e.id)).toEqual(['x'])
+    expect(next[0].description).toBe('Coffee')
+  })
 })
 
 describe('filterByCategory', () => {

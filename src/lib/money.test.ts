@@ -14,6 +14,11 @@ describe('formatCurrency', () => {
     expect(formatCurrency(12.5, 'USD')).toBe('$12.50')
     expect(formatCurrency(7, 'EUR')).toBe('€7.00')
   })
+
+  it('formats sums with floating-point artifacts cleanly', () => {
+    // 0.1 + 0.2 === 0.30000000000000004 in IEEE 754
+    expect(formatCurrency(0.1 + 0.2, 'USD')).toBe('$0.30')
+  })
 })
 
 describe('parseAmount', () => {

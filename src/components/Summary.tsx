@@ -1,5 +1,5 @@
 import { grandTotal, totalsByCategory } from '../lib/expenses'
-import { currencySymbol } from '../lib/money'
+import { formatCurrency } from '../lib/money'
 import type { Currency, Expense } from '../types'
 
 interface Props {
@@ -9,7 +9,6 @@ interface Props {
 
 export function Summary({ expenses, currency }: Props) {
   const totals = totalsByCategory(expenses)
-  const symbol = currencySymbol(currency)
   const categories = Object.keys(totals).sort()
 
   return (
@@ -29,20 +28,14 @@ export function Summary({ expenses, currency }: Props) {
             {categories.map((c) => (
               <tr key={c}>
                 <td>{c}</td>
-                <td className="amount">
-                  {symbol}
-                  {totals[c]}
-                </td>
+                <td className="amount">{formatCurrency(totals[c], currency)}</td>
               </tr>
             ))}
           </tbody>
           <tfoot>
             <tr>
               <th>All categories</th>
-              <th className="amount">
-                {symbol}
-                {grandTotal(expenses)}
-              </th>
+              <th className="amount">{formatCurrency(grandTotal(expenses), currency)}</th>
             </tr>
           </tfoot>
         </table>

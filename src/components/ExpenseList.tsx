@@ -1,0 +1,61 @@
+import { useState } from 'react'
+import { filterByCategory, sortByDate } from '../lib/expenses'
+import { formatCurrency } from '../lib/money'
+import { CATEGORIES, type Category, type Currency, type Expense, type NewExpense } from '../types'
+import { ExpenseForm } from './ExpenseForm'
+
+interface Props {
+  expenses: Expense[]
+  currency: Currency
+  onAdd: (expense: NewExpense) => void
+  onRemove: (id: string) => void
+}
+
+export function ExpenseList({ expenses, currency, onAdd, onRemove }: Props) {
+  const [category, setCategory] = useState<Category | 'All'>('All')
+  const visible = sortByDate(filterByCategory(expenses, category))
+
+  return (
+    <section>
+      <h2>Expenses</h2>
+      <ExpenseForm onAdd={onAdd} />
+      <div className="toolbar">
+        <label>
+          Category
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value as Category | 'All')}
+          >
+            <option value="All">All</option>
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      {visible.length === 0 ? (
+        <p className="empty">No expenses yet.</p>
+      ) : (
+        <ul className="expense-list">
+          {visible.map((e) => (
+            <li key={e.id}>
+              <span className="date">{e.date}</span>
+              <span className="description">{e.description}</span>
+              <span className="category">{e.category}</span>
+              <span className="amount">{formatCurrency(e.amount, currency)}</span>
+              <button
+                type="button"
+                onClick={() => onRemove(e.id)}
+                aria-label={`Delete ${e.description}`}
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  )
+}

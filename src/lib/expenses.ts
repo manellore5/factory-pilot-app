@@ -39,6 +39,16 @@ export function filterByCategory(expenses: Expense[], category: Category | 'All'
   return expenses.filter((e) => e.category === category)
 }
 
+export function filterByMonth(expenses: Expense[], month: string): Expense[] {
+  if (month === 'All') return expenses
+  return expenses.filter((e) => e.date.slice(0, 7) === month)
+}
+
+export function getUniqueMonths(expenses: Expense[]): string[] {
+  const months = new Set(expenses.map((e) => e.date.slice(0, 7)))
+  return [...months].sort((a, b) => b.localeCompare(a))
+}
+
 /** Newest first; ties keep insertion order. */
 export function sortByDate(expenses: Expense[]): Expense[] {
   return [...expenses].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0))

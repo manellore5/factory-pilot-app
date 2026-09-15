@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { filterByCategory, sortByDate } from '../lib/expenses'
+import { filterByCategory, filterByMonth, getUniqueMonths, sortByDate } from '../lib/expenses'
 import { formatCurrency } from '../lib/money'
 import { CATEGORIES, type Category, type Currency, type Expense, type NewExpense } from '../types'
 import { ExpenseForm } from './ExpenseForm'
@@ -13,7 +13,9 @@ interface Props {
 
 export function ExpenseList({ expenses, currency, onAdd, onRemove }: Props) {
   const [category, setCategory] = useState<Category | 'All'>('All')
-  const visible = sortByDate(filterByCategory(expenses, category))
+  const [month, setMonth] = useState<string>('All')
+  const months = getUniqueMonths(expenses)
+  const visible = sortByDate(filterByMonth(filterByCategory(expenses, category), month))
 
   return (
     <section>
@@ -30,6 +32,20 @@ export function ExpenseList({ expenses, currency, onAdd, onRemove }: Props) {
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>
                 {c}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Month
+          <select
+            value={month}
+            onChange={(e) => setMonth(e.target.value)}
+          >
+            <option value="All">All</option>
+            {months.map((m) => (
+              <option key={m} value={m}>
+                {m}
               </option>
             ))}
           </select>

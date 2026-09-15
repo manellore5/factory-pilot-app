@@ -3,6 +3,8 @@ import type { Expense } from '../types'
 import {
   addExpense,
   filterByCategory,
+  filterByMonth,
+  getUniqueMonths,
   grandTotal,
   removeExpense,
   sortByDate,
@@ -59,6 +61,42 @@ describe('filterByCategory', () => {
 
   it('keeps only the matching category', () => {
     expect(filterByCategory(sample, 'Food').map((e) => e.id)).toEqual(['a', 'c'])
+  })
+})
+
+describe('filterByMonth', () => {
+  const multiMonth: Expense[] = [
+    { id: 'a', description: 'Groceries', amount: 42, category: 'Food', date: '2026-09-01' },
+    { id: 'b', description: 'Bus pass', amount: 30, category: 'Transport', date: '2026-08-15' },
+    { id: 'c', description: 'Lunch', amount: 12.5, category: 'Food', date: '2026-09-15' },
+  ]
+
+  it('returns everything for "All"', () => {
+    expect(filterByMonth(multiMonth, 'All')).toHaveLength(3)
+  })
+
+  it('keeps only expenses from the matching month', () => {
+    expect(filterByMonth(multiMonth, '2026-09').map((e) => e.id)).toEqual(['a', 'c'])
+  })
+
+  it('returns empty array for non-matching month', () => {
+    expect(filterByMonth(multiMonth, '2026-07')).toEqual([])
+  })
+})
+
+describe('getUniqueMonths', () => {
+  it('returns unique months sorted newest first', () => {
+    const expenses: Expense[] = [
+      { id: 'a', description: 'A', amount: 1, category: 'Food', date: '2026-07-01' },
+      { id: 'b', description: 'B', amount: 1, category: 'Food', date: '2026-09-01' },
+      { id: 'c', description: 'C', amount: 1, category: 'Food', date: '2026-08-01' },
+      { id: 'd', description: 'D', amount: 1, category: 'Food', date: '2026-09-15' },
+    ]
+    expect(getUniqueMonths(expenses)).toEqual(['2026-09', '2026-08', '2026-07'])
+  })
+
+  it('returns empty array for no expenses', () => {
+    expect(getUniqueMonths([])).toEqual([])
   })
 })
 

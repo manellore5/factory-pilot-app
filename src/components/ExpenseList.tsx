@@ -51,8 +51,10 @@ export function ExpenseList({ expenses, currency, onAdd, onRemove }: Props) {
           </select>
         </label>
       </div>
-      {visible.length === 0 ? (
+      {expenses.length === 0 ? (
         <p className="empty">No expenses yet.</p>
+      ) : visible.length === 0 ? (
+        <p className="empty">No expenses match the selected filters.</p>
       ) : (
         <ul className="expense-list">
           {visible.map((e) => (

@@ -66,4 +66,4 @@ src/
 - Do not commit `.artifacts/` (planning output); it is gitignored.
 - Do not regenerate `package-lock.json` unless the change adds or updates a dependency. Use `npm ci` to install; if the lockfile changes without a dependency change, revert it before committing.
 - A pull request should contain only the files needed for the issue plus its tests.
-- Work on the branch the session already checked out (Factory names it `factory/issue-<n>`) and open the pull request from that branch. Do not create a differently named branch; Factory links the pull request to the issue card by that name.
+- Branch naming is mandatory: create your branch as `factory/issue-<n>`, where `<n>` is the GitHub issue number (for issue #12 the branch is `factory/issue-12`). Open the pull request from that branch. Factory links the pull request to the issue card by this exact name; any other name breaks the link.

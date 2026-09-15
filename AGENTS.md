@@ -67,3 +67,4 @@ src/
 - Do not regenerate `package-lock.json` unless the change adds or updates a dependency. Use `npm ci` to install; if the lockfile changes without a dependency change, revert it before committing.
 - A pull request should contain only the files needed for the issue plus its tests.
 - Branch naming is mandatory: create your branch as `factory/issue-<n>`, where `<n>` is the GitHub issue number (for issue #12 the branch is `factory/issue-12`). Open the pull request from that branch. Factory links the pull request to the issue card by this exact name; any other name breaks the link.
+- Open the pull request with exactly this command and nothing else afterwards: `gh pr create --fill --base main --head factory/issue-<n>`. Its output must be the single pull request URL; do not print other URLs in the same command. Factory uses that output to link the pull request to the issue card and to start the review automatically.

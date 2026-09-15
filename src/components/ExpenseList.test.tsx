@@ -92,6 +92,21 @@ describe('ExpenseList', () => {
     await user.selectOptions(monthFilter, '2026-09')
 
     expect(screen.queryByRole('listitem')).not.toBeInTheDocument()
+    expect(screen.getByText('No expenses match the selected filters.')).toBeInTheDocument()
+    expect(screen.queryByText('No expenses yet.')).not.toBeInTheDocument()
+  })
+
+  it('shows "No expenses yet." when expenses array is empty', () => {
+    render(
+      <ExpenseList
+        expenses={[]}
+        currency="USD"
+        onAdd={vi.fn()}
+        onRemove={vi.fn()}
+      />
+    )
+
     expect(screen.getByText('No expenses yet.')).toBeInTheDocument()
+    expect(screen.queryByText('No expenses match the selected filters.')).not.toBeInTheDocument()
   })
 })

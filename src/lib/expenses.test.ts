@@ -7,6 +7,7 @@ import {
   removeExpense,
   sortByDate,
   totalsByCategory,
+  validateExpenseInput,
 } from './expenses'
 
 const sample: Expense[] = [
@@ -81,5 +82,44 @@ describe('totalsByCategory', () => {
 describe('grandTotal', () => {
   it('sums all amounts', () => {
     expect(grandTotal(sample)).toBe(84.5)
+  })
+})
+
+describe('validateExpenseInput', () => {
+  it('returns empty object for valid input', () => {
+    expect(validateExpenseInput('Coffee', 3.5)).toEqual({})
+  })
+
+  it('returns description error for empty description', () => {
+    const errors = validateExpenseInput('', 3.5)
+    expect(errors.description).toBe('Description is required')
+    expect(errors.amount).toBeUndefined()
+  })
+
+  it('returns description error for whitespace-only description', () => {
+    const errors = validateExpenseInput('   ', 3.5)
+    expect(errors.description).toBe('Description is required')
+  })
+
+  it('returns amount error for zero amount', () => {
+    const errors = validateExpenseInput('Coffee', 0)
+    expect(errors.amount).toBe('Amount must be greater than zero')
+    expect(errors.description).toBeUndefined()
+  })
+
+  it('returns amount error for negative amount', () => {
+    const errors = validateExpenseInput('Coffee', -5)
+    expect(errors.amount).toBe('Amount must be greater than zero')
+  })
+
+  it('returns amount error for NaN amount', () => {
+    const errors = validateExpenseInput('Coffee', NaN)
+    expect(errors.amount).toBe('Amount must be greater than zero')
+  })
+
+  it('returns multiple errors when both fields are invalid', () => {
+    const errors = validateExpenseInput('', -5)
+    expect(errors.description).toBe('Description is required')
+    expect(errors.amount).toBe('Amount must be greater than zero')
   })
 })

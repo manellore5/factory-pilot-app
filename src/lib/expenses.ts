@@ -1,5 +1,24 @@
 import type { Category, Expense, NewExpense } from '../types'
 
+export interface ExpenseInputErrors {
+  description?: string
+  amount?: string
+}
+
+export function validateExpenseInput(
+  description: string,
+  amount: number
+): ExpenseInputErrors {
+  const errors: ExpenseInputErrors = {}
+  if (description.trim() === '') {
+    errors.description = 'Description is required'
+  }
+  if (Number.isNaN(amount) || amount <= 0) {
+    errors.amount = 'Amount must be greater than zero'
+  }
+  return errors
+}
+
 export function createId(): string {
   return crypto.randomUUID()
 }

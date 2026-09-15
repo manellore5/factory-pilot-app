@@ -35,4 +35,42 @@ describe('ExpenseForm', () => {
 
     expect(onAdd).not.toHaveBeenCalled()
   })
+
+  it('rejects empty description and shows error', async () => {
+    const onAdd = vi.fn()
+    const user = userEvent.setup()
+    render(<ExpenseForm onAdd={onAdd} />)
+
+    await user.type(screen.getByLabelText('Amount'), '5.00')
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+
+    expect(onAdd).not.toHaveBeenCalled()
+    expect(screen.getByText('Description is required')).toBeInTheDocument()
+  })
+
+  it('rejects zero amount and shows error', async () => {
+    const onAdd = vi.fn()
+    const user = userEvent.setup()
+    render(<ExpenseForm onAdd={onAdd} />)
+
+    await user.type(screen.getByLabelText('Description'), 'Coffee')
+    await user.type(screen.getByLabelText('Amount'), '0')
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+
+    expect(onAdd).not.toHaveBeenCalled()
+    expect(screen.getByText('Amount must be greater than zero')).toBeInTheDocument()
+  })
+
+  it('rejects negative amount and shows error', async () => {
+    const onAdd = vi.fn()
+    const user = userEvent.setup()
+    render(<ExpenseForm onAdd={onAdd} />)
+
+    await user.type(screen.getByLabelText('Description'), 'Coffee')
+    await user.type(screen.getByLabelText('Amount'), '-5')
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+
+    expect(onAdd).not.toHaveBeenCalled()
+    expect(screen.getByText('Amount must be greater than zero')).toBeInTheDocument()
+  })
 })

@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { validateExpenseInput, type ExpenseInputErrors } from '../lib/expenses'
 import { parseAmount } from '../lib/money'
 import { CATEGORIES, type Category, type NewExpense } from '../types'
 
@@ -15,11 +16,17 @@ export function ExpenseForm({ onAdd }: Props) {
   const [amount, setAmount] = useState('')
   const [category, setCategory] = useState<Category>('Food')
   const [date, setDate] = useState(today)
+  const [errors, setErrors] = useState<ExpenseInputErrors>({})
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const parsed = parseAmount(amount)
-    if (Number.isNaN(parsed)) return
+    const validationErrors = validateExpenseInput(description, parsed)
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors)
+      return
+    }
+    setErrors({})
     onAdd({ description: description.trim(), amount: parsed, category, date })
     setDescription('')
     setAmount('')
@@ -34,6 +41,7 @@ export function ExpenseForm({ onAdd }: Props) {
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Coffee"
         />
+        {errors.description && <span className="error">{errors.description}</span>}
       </label>
       <label>
         Amount
@@ -43,6 +51,7 @@ export function ExpenseForm({ onAdd }: Props) {
           inputMode="decimal"
           placeholder="0.00"
         />
+        {errors.amount && <span className="error">{errors.amount}</span>}
       </label>
       <label>
         Category

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { filterByCategory, filterByMonth, getUniqueMonths, sortByDate } from '../lib/expenses'
+import { filterByCategory, filterByMonth, formatExpenseTotal, getUniqueMonths, grandTotal, sortByDate } from '../lib/expenses'
 import { formatCurrency } from '../lib/money'
 import { CATEGORIES, type Category, type Currency, type Expense, type NewExpense } from '../types'
 import { ExpenseForm } from './ExpenseForm'
@@ -56,23 +56,28 @@ export function ExpenseList({ expenses, currency, onAdd, onRemove }: Props) {
       ) : visible.length === 0 ? (
         <p className="empty">No expenses match the selected filters.</p>
       ) : (
-        <ul className="expense-list">
-          {visible.map((e) => (
-            <li key={e.id}>
-              <span className="date">{e.date}</span>
-              <span className="description">{e.description}</span>
-              <span className="category">{e.category}</span>
-              <span className="amount">{formatCurrency(e.amount, currency)}</span>
-              <button
-                type="button"
-                onClick={() => onRemove(e.id)}
-                aria-label={`Delete ${e.description}`}
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="expense-list">
+            {visible.map((e) => (
+              <li key={e.id}>
+                <span className="date">{e.date}</span>
+                <span className="description">{e.description}</span>
+                <span className="category">{e.category}</span>
+                <span className="amount">{formatCurrency(e.amount, currency)}</span>
+                <button
+                  type="button"
+                  onClick={() => onRemove(e.id)}
+                  aria-label={`Delete ${e.description}`}
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+          <p className="list-total">
+            {formatExpenseTotal(visible.length, grandTotal(visible), currency)}
+          </p>
+        </>
       )}
     </section>
   )

@@ -1,4 +1,5 @@
-import type { Category, Expense, NewExpense } from '../types'
+import type { Category, Currency, Expense, NewExpense } from '../types'
+import { formatCurrency } from './money'
 
 export interface ExpenseInputErrors {
   description?: string
@@ -64,4 +65,9 @@ export function totalsByCategory(expenses: Expense[]): Record<string, number> {
 
 export function grandTotal(expenses: Expense[]): number {
   return expenses.reduce((sum, e) => sum + e.amount, 0)
+}
+
+export function formatExpenseTotal(count: number, total: number, currency: Currency): string {
+  const noun = count === 1 ? 'expense' : 'expenses'
+  return `Total: ${formatCurrency(total, currency)} (${count} ${noun})`
 }

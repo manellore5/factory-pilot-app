@@ -127,6 +127,13 @@ button[type='submit'] {
   font-variant-numeric: tabular-nums;
 }
 
+.list-total {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #57606a;
+  text-align: right;
+}
+
 .summary {
   width: 100%;
   border-collapse: collapse;

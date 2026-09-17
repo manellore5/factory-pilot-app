@@ -4,6 +4,7 @@ import {
   addExpense,
   filterByCategory,
   filterByMonth,
+  formatExpenseTotal,
   getUniqueMonths,
   grandTotal,
   removeExpense,
@@ -159,5 +160,23 @@ describe('validateExpenseInput', () => {
     const errors = validateExpenseInput('', -5)
     expect(errors.description).toBe('Description is required')
     expect(errors.amount).toBe('Amount must be greater than zero')
+  })
+})
+
+describe('formatExpenseTotal', () => {
+  it('formats total with plural expenses', () => {
+    expect(formatExpenseTotal(3, 84.5, 'USD')).toBe('Total: $84.50 (3 expenses)')
+  })
+
+  it('formats total with singular expense', () => {
+    expect(formatExpenseTotal(1, 42, 'USD')).toBe('Total: $42.00 (1 expense)')
+  })
+
+  it('formats zero expenses', () => {
+    expect(formatExpenseTotal(0, 0, 'USD')).toBe('Total: $0.00 (0 expenses)')
+  })
+
+  it('formats with EUR currency', () => {
+    expect(formatExpenseTotal(2, 100, 'EUR')).toBe('Total: €100.00 (2 expenses)')
   })
 })

@@ -157,6 +157,21 @@ describe('validateExpenseInput', () => {
     expect(errors.amount).toBe('Amount must be greater than zero')
   })
 
+  it('returns amount error for Infinity amount', () => {
+    const errors = validateExpenseInput('Coffee', Infinity, '2026-09-17')
+    expect(errors.amount).toBe('Amount must be greater than zero')
+  })
+
+  it('returns amount error for -Infinity amount', () => {
+    const errors = validateExpenseInput('Coffee', -Infinity, '2026-09-17')
+    expect(errors.amount).toBe('Amount must be greater than zero')
+  })
+
+  it('returns amount error for overflowing number (1e400)', () => {
+    const errors = validateExpenseInput('Coffee', parseFloat('1e400'), '2026-09-17')
+    expect(errors.amount).toBe('Amount must be greater than zero')
+  })
+
   it('returns multiple errors when both fields are invalid', () => {
     const errors = validateExpenseInput('', -5, '2026-09-17')
     expect(errors.description).toBe('Description is required')

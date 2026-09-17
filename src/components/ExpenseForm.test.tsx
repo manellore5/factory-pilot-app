@@ -87,4 +87,17 @@ describe('ExpenseForm', () => {
     expect(onAdd).not.toHaveBeenCalled()
     expect(screen.getByText('Date is required')).toBeInTheDocument()
   })
+
+  it('rejects "Infinity" string input and shows error', async () => {
+    const onAdd = vi.fn()
+    const user = userEvent.setup()
+    render(<ExpenseForm onAdd={onAdd} />)
+
+    await user.type(screen.getByLabelText('Description'), 'Coffee')
+    await user.type(screen.getByLabelText('Amount'), 'Infinity')
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+
+    expect(onAdd).not.toHaveBeenCalled()
+    expect(screen.getByText('Amount must be greater than zero')).toBeInTheDocument()
+  })
 })

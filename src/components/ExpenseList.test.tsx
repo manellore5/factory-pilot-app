@@ -155,4 +155,51 @@ describe('ExpenseList', () => {
 
     expect(screen.queryByText(/^Total:/)).not.toBeInTheDocument()
   })
+
+  it('resets month filter to All when selected month no longer exists after deletion', async () => {
+    const user = userEvent.setup()
+    const testExpenses: Expense[] = [
+      { id: 'a', description: 'Groceries', amount: 42, category: 'Food', date: '2026-09-01' },
+      { id: 'b', description: 'Rent', amount: 1200, category: 'Housing', date: '2026-08-31' },
+    ]
+
+    let currentExpenses = testExpenses
+    const onRemove = vi.fn((id: string) => {
+      currentExpenses = currentExpenses.filter((e) => e.id !== id)
+    })
+
+    const { rerender } = render(
+      <ExpenseList
+        expenses={currentExpenses}
+        currency="USD"
+        onAdd={vi.fn()}
+        onRemove={onRemove}
+      />
+    )
+
+    const { monthFilter } = getFilterDropdowns()
+
+    // Select August (only has Rent)
+    await user.selectOptions(monthFilter, '2026-08')
+    expect(screen.getByText('Rent')).toBeInTheDocument()
+    expect(screen.queryByText('Groceries')).not.toBeInTheDocument()
+
+    // Delete Rent (the only August expense)
+    await user.click(screen.getByRole('button', { name: 'Delete Rent' }))
+
+    // Rerender with updated expenses (simulating parent state update)
+    rerender(
+      <ExpenseList
+        expenses={currentExpenses}
+        currency="USD"
+        onAdd={vi.fn()}
+        onRemove={onRemove}
+      />
+    )
+
+    // Should show all remaining expenses (Groceries) and dropdown should show "All"
+    expect(screen.getByText('Groceries')).toBeInTheDocument()
+    expect(monthFilter).toHaveValue('All')
+    expect(screen.queryByText('No expenses match the selected filters.')).not.toBeInTheDocument()
+  })
 })

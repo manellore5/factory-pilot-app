@@ -55,6 +55,13 @@ export function getUniqueMonths(expenses: Expense[]): string[] {
   return [...months].sort((a, b) => b.localeCompare(a))
 }
 
+export function resolveEffectiveMonth(month: string, availableMonths: string[]): string {
+  if (month === 'All' || availableMonths.includes(month)) {
+    return month
+  }
+  return 'All'
+}
+
 /** Newest first; ties keep insertion order. */
 export function sortByDate(expenses: Expense[]): Expense[] {
   return [...expenses].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0))

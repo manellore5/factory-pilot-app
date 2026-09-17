@@ -21,7 +21,7 @@ export function ExpenseForm({ onAdd }: Props) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const parsed = parseAmount(amount)
-    const validationErrors = validateExpenseInput(description, parsed)
+    const validationErrors = validateExpenseInput(description, parsed, date)
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors)
       return
@@ -66,6 +66,7 @@ export function ExpenseForm({ onAdd }: Props) {
       <label>
         Date
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+        {errors.date && <span className="error">{errors.date}</span>}
       </label>
       <button type="submit">Add</button>
     </form>

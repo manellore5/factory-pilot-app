@@ -85,3 +85,16 @@ export function formatExpenseTotal(count: number, total: number, currency: Curre
   const noun = count === 1 ? 'expense' : 'expenses'
   return `Total: ${formatCurrency(total, currency)} (${count} ${noun})`
 }
+
+/**
+ * Returns each category's share of the total as a percentage rounded to one decimal.
+ * When the sum is zero, every share is 0. Does not mutate the input.
+ */
+export function shareOfTotal(totals: Record<string, number>): Record<string, number> {
+  const sum = Object.values(totals).reduce((acc, v) => acc + v, 0)
+  const shares: Record<string, number> = {}
+  for (const key of Object.keys(totals)) {
+    shares[key] = sum === 0 ? 0 : Math.round((totals[key] / sum) * 1000) / 10
+  }
+  return shares
+}

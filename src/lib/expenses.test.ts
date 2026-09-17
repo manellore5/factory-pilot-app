@@ -9,6 +9,7 @@ import {
   grandTotal,
   removeExpense,
   resolveEffectiveMonth,
+  shareOfTotal,
   sortByDate,
   totalsByCategory,
   validateExpenseInput,
@@ -232,5 +233,32 @@ describe('resolveEffectiveMonth', () => {
 
   it('returns "All" when available months is empty', () => {
     expect(resolveEffectiveMonth('2026-09', [])).toBe('All')
+  })
+})
+
+describe('shareOfTotal', () => {
+  it('returns each category share as a percentage rounded to one decimal', () => {
+    // Food: 54.5, Transport: 30 → total 84.5
+    // Food: 54.5/84.5 = 64.497...% → 64.5%
+    // Transport: 30/84.5 = 35.502...% → 35.5%
+    expect(shareOfTotal({ Food: 54.5, Transport: 30 })).toEqual({ Food: 64.5, Transport: 35.5 })
+  })
+
+  it('returns 100.0 for a single category', () => {
+    expect(shareOfTotal({ Housing: 1200 })).toEqual({ Housing: 100 })
+  })
+
+  it('returns 0 for all categories when sum is zero', () => {
+    expect(shareOfTotal({ Food: 0, Transport: 0 })).toEqual({ Food: 0, Transport: 0 })
+  })
+
+  it('returns empty object for empty input', () => {
+    expect(shareOfTotal({})).toEqual({})
+  })
+
+  it('does not mutate the input', () => {
+    const input = { Food: 50, Transport: 50 }
+    shareOfTotal(input)
+    expect(input).toEqual({ Food: 50, Transport: 50 })
   })
 })

@@ -125,39 +125,59 @@ describe('grandTotal', () => {
 
 describe('validateExpenseInput', () => {
   it('returns empty object for valid input', () => {
-    expect(validateExpenseInput('Coffee', 3.5)).toEqual({})
+    expect(validateExpenseInput('Coffee', 3.5, '2026-09-17')).toEqual({})
   })
 
   it('returns description error for empty description', () => {
-    const errors = validateExpenseInput('', 3.5)
+    const errors = validateExpenseInput('', 3.5, '2026-09-17')
     expect(errors.description).toBe('Description is required')
     expect(errors.amount).toBeUndefined()
   })
 
   it('returns description error for whitespace-only description', () => {
-    const errors = validateExpenseInput('   ', 3.5)
+    const errors = validateExpenseInput('   ', 3.5, '2026-09-17')
     expect(errors.description).toBe('Description is required')
   })
 
   it('returns amount error for zero amount', () => {
-    const errors = validateExpenseInput('Coffee', 0)
+    const errors = validateExpenseInput('Coffee', 0, '2026-09-17')
     expect(errors.amount).toBe('Amount must be greater than zero')
     expect(errors.description).toBeUndefined()
   })
 
   it('returns amount error for negative amount', () => {
-    const errors = validateExpenseInput('Coffee', -5)
+    const errors = validateExpenseInput('Coffee', -5, '2026-09-17')
     expect(errors.amount).toBe('Amount must be greater than zero')
   })
 
   it('returns amount error for NaN amount', () => {
-    const errors = validateExpenseInput('Coffee', NaN)
+    const errors = validateExpenseInput('Coffee', NaN, '2026-09-17')
     expect(errors.amount).toBe('Amount must be greater than zero')
   })
 
   it('returns multiple errors when both fields are invalid', () => {
-    const errors = validateExpenseInput('', -5)
+    const errors = validateExpenseInput('', -5, '2026-09-17')
     expect(errors.description).toBe('Description is required')
     expect(errors.amount).toBe('Amount must be greater than zero')
+  })
+
+  it('returns date error for empty date', () => {
+    const errors = validateExpenseInput('Coffee', 3.5, '')
+    expect(errors.date).toBe('Date is required')
+    expect(errors.description).toBeUndefined()
+    expect(errors.amount).toBeUndefined()
+  })
+
+  it('returns date error for invalid date format', () => {
+    expect(validateExpenseInput('Coffee', 3.5, '09-17-2026').date).toBe('Date is required')
+    expect(validateExpenseInput('Coffee', 3.5, '2026/09/17').date).toBe('Date is required')
+    expect(validateExpenseInput('Coffee', 3.5, 'invalid').date).toBe('Date is required')
+  })
+
+  it('returns multiple errors including date when all fields are invalid', () => {
+    const errors = validateExpenseInput('', -5, '')
+    expect(errors.description).toBe('Description is required')
+    expect(errors.amount).toBe('Amount must be greater than zero')
+    expect(errors.date).toBe('Date is required')
   })
 })

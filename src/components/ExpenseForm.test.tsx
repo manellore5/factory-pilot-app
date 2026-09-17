@@ -73,4 +73,18 @@ describe('ExpenseForm', () => {
     expect(onAdd).not.toHaveBeenCalled()
     expect(screen.getByText('Amount must be greater than zero')).toBeInTheDocument()
   })
+
+  it('rejects empty date and shows error', async () => {
+    const onAdd = vi.fn()
+    const user = userEvent.setup()
+    render(<ExpenseForm onAdd={onAdd} />)
+
+    await user.type(screen.getByLabelText('Description'), 'Coffee')
+    await user.type(screen.getByLabelText('Amount'), '3.50')
+    await user.clear(screen.getByLabelText('Date'))
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+
+    expect(onAdd).not.toHaveBeenCalled()
+    expect(screen.getByText('Date is required')).toBeInTheDocument()
+  })
 })

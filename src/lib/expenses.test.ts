@@ -8,6 +8,7 @@ import {
   getUniqueMonths,
   grandTotal,
   removeExpense,
+  resolveEffectiveMonth,
   sortByDate,
   totalsByCategory,
   validateExpenseInput,
@@ -198,5 +199,23 @@ describe('formatExpenseTotal', () => {
 
   it('formats with EUR currency', () => {
     expect(formatExpenseTotal(2, 100, 'EUR')).toBe('Total: €100.00 (2 expenses)')
+  })
+})
+
+describe('resolveEffectiveMonth', () => {
+  it('returns "All" when month is "All"', () => {
+    expect(resolveEffectiveMonth('All', ['2026-09', '2026-08'])).toBe('All')
+  })
+
+  it('returns the month when it exists in available months', () => {
+    expect(resolveEffectiveMonth('2026-09', ['2026-09', '2026-08'])).toBe('2026-09')
+  })
+
+  it('returns "All" when month does not exist in available months', () => {
+    expect(resolveEffectiveMonth('2026-07', ['2026-09', '2026-08'])).toBe('All')
+  })
+
+  it('returns "All" when available months is empty', () => {
+    expect(resolveEffectiveMonth('2026-09', [])).toBe('All')
   })
 })

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { filterByCategory, filterByMonth, formatExpenseTotal, getUniqueMonths, grandTotal, sortByDate } from '../lib/expenses'
+import { filterByCategory, filterByMonth, formatExpenseTotal, getUniqueMonths, grandTotal, resolveEffectiveMonth, sortByDate } from '../lib/expenses'
 import { formatCurrency } from '../lib/money'
 import { CATEGORIES, type Category, type Currency, type Expense, type NewExpense } from '../types'
 import { ExpenseForm } from './ExpenseForm'
@@ -15,7 +15,8 @@ export function ExpenseList({ expenses, currency, onAdd, onRemove }: Props) {
   const [category, setCategory] = useState<Category | 'All'>('All')
   const [month, setMonth] = useState<string>('All')
   const months = getUniqueMonths(expenses)
-  const visible = sortByDate(filterByMonth(filterByCategory(expenses, category), month))
+  const effectiveMonth = resolveEffectiveMonth(month, months)
+  const visible = sortByDate(filterByMonth(filterByCategory(expenses, category), effectiveMonth))
 
   return (
     <section>
@@ -39,7 +40,7 @@ export function ExpenseList({ expenses, currency, onAdd, onRemove }: Props) {
         <label>
           Month
           <select
-            value={month}
+            value={effectiveMonth}
             onChange={(e) => setMonth(e.target.value)}
           >
             <option value="All">All</option>

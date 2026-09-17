@@ -36,6 +36,19 @@ describe('ExpenseForm', () => {
     expect(onAdd).not.toHaveBeenCalled()
   })
 
+  it('shows "Amount must be a number" for input with thousands separator', async () => {
+    const onAdd = vi.fn()
+    const user = userEvent.setup()
+    render(<ExpenseForm onAdd={onAdd} />)
+
+    await user.type(screen.getByLabelText('Description'), 'Coffee')
+    await user.type(screen.getByLabelText('Amount'), '1,000')
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+
+    expect(onAdd).not.toHaveBeenCalled()
+    expect(screen.getByText('Amount must be a number')).toBeInTheDocument()
+  })
+
   it('rejects empty description and shows error', async () => {
     const onAdd = vi.fn()
     const user = userEvent.setup()

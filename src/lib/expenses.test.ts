@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Expense } from '../types'
+import { parseAmount } from './money'
 import {
   addExpense,
   filterByCategory,
@@ -154,7 +155,12 @@ describe('validateExpenseInput', () => {
 
   it('returns amount error for NaN amount', () => {
     const errors = validateExpenseInput('Coffee', NaN, '2026-09-17')
-    expect(errors.amount).toBe('Amount must be greater than zero')
+    expect(errors.amount).toBe('Amount must be a number')
+  })
+
+  it('returns "must be a number" for NaN from parseAmount("1,000")', () => {
+    const errors = validateExpenseInput('Coffee', parseAmount('1,000'), '2026-09-17')
+    expect(errors.amount).toBe('Amount must be a number')
   })
 
   it('returns amount error for Infinity amount', () => {

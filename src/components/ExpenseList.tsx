@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { filterByCategory, filterByMonth, formatExpenseTotal, getUniqueMonths, grandTotal, resolveEffectiveMonth, sortByDate } from '../lib/expenses'
+import { filterByCategory, filterByMonth, formatExpenseTotal, getUniqueMonths, grandTotal, resolveEffectiveMonth, sortByAmount, sortByDate } from '../lib/expenses'
 import { formatCurrency } from '../lib/money'
 import { CATEGORIES, type Category, type Currency, type Expense, type NewExpense } from '../types'
 import { ExpenseForm } from './ExpenseForm'
@@ -14,9 +14,11 @@ interface Props {
 export function ExpenseList({ expenses, currency, onAdd, onRemove }: Props) {
   const [category, setCategory] = useState<Category | 'All'>('All')
   const [month, setMonth] = useState<string>('All')
+  const [sortMode, setSortMode] = useState<'date' | 'amount'>('date')
   const months = getUniqueMonths(expenses)
   const effectiveMonth = resolveEffectiveMonth(month, months)
-  const visible = sortByDate(filterByMonth(filterByCategory(expenses, category), effectiveMonth))
+  const filtered = filterByMonth(filterByCategory(expenses, category), effectiveMonth)
+  const visible = sortMode === 'amount' ? sortByAmount(filtered) : sortByDate(filtered)
 
   return (
     <section>
@@ -49,6 +51,16 @@ export function ExpenseList({ expenses, currency, onAdd, onRemove }: Props) {
                 {m}
               </option>
             ))}
+          </select>
+        </label>
+        <label>
+          Sort
+          <select
+            value={sortMode}
+            onChange={(e) => setSortMode(e.target.value as 'date' | 'amount')}
+          >
+            <option value="date">Newest first</option>
+            <option value="amount">Largest amount</option>
           </select>
         </label>
       </div>

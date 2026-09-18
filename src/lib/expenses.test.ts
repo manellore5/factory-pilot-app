@@ -11,6 +11,7 @@ import {
   removeExpense,
   resolveEffectiveMonth,
   shareOfTotal,
+  sortByAmount,
   sortByDate,
   totalsByCategory,
   validateExpenseInput,
@@ -108,6 +109,26 @@ describe('sortByDate', () => {
   it('orders newest first without mutating the input', () => {
     expect(sortByDate(sample).map((e) => e.id)).toEqual(['b', 'c', 'a'])
     expect(sample[0].id).toBe('a')
+  })
+})
+
+describe('sortByAmount', () => {
+  it('orders largest first without mutating the input', () => {
+    expect(sortByAmount(sample).map((e) => e.id)).toEqual(['a', 'b', 'c'])
+    expect(sample[0].id).toBe('a')
+  })
+
+  it('preserves order for equal amounts', () => {
+    const ties: Expense[] = [
+      { id: 'x', description: 'A', amount: 10, category: 'Food', date: '2026-09-01' },
+      { id: 'y', description: 'B', amount: 10, category: 'Food', date: '2026-09-02' },
+      { id: 'z', description: 'C', amount: 10, category: 'Food', date: '2026-09-03' },
+    ]
+    expect(sortByAmount(ties).map((e) => e.id)).toEqual(['x', 'y', 'z'])
+  })
+
+  it('returns empty array for empty input', () => {
+    expect(sortByAmount([])).toEqual([])
   })
 })
 

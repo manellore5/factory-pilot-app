@@ -69,6 +69,11 @@ export function sortByDate(expenses: Expense[]): Expense[] {
   return [...expenses].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0))
 }
 
+/** Largest first; ties keep insertion order. */
+export function sortByAmount(expenses: Expense[]): Expense[] {
+  return [...expenses].sort((a, b) => (a.amount < b.amount ? 1 : a.amount > b.amount ? -1 : 0))
+}
+
 export function totalsByCategory(expenses: Expense[]): Record<string, number> {
   const totals: Record<string, number> = {}
   for (const e of expenses) {

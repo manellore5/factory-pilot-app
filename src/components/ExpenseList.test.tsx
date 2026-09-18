@@ -202,4 +202,35 @@ describe('ExpenseList', () => {
     expect(monthFilter).toHaveValue('All')
     expect(screen.queryByText('No expenses match the selected filters.')).not.toBeInTheDocument()
   })
+
+  it('sorts expenses by largest amount when selected', async () => {
+    const user = userEvent.setup()
+    render(
+      <ExpenseList
+        expenses={expenses}
+        currency="USD"
+        onAdd={vi.fn()}
+        onRemove={vi.fn()}
+      />
+    )
+
+    const sortDropdown = screen.getByLabelText('Sort')
+
+    // Default is "Newest first" (by date)
+    expect(sortDropdown).toHaveValue('date')
+    let items = screen.getAllByRole('listitem')
+    // Default order: Lunch (Sep 15), Groceries (Sep 1), Bus pass (Aug 15)
+    expect(within(items[0]).getByText('Lunch')).toBeInTheDocument()
+    expect(within(items[1]).getByText('Groceries')).toBeInTheDocument()
+    expect(within(items[2]).getByText('Bus pass')).toBeInTheDocument()
+
+    // Select "Largest amount"
+    await user.selectOptions(sortDropdown, 'amount')
+
+    // Now order by amount descending: Groceries (42), Bus pass (30), Lunch (12.5)
+    items = screen.getAllByRole('listitem')
+    expect(within(items[0]).getByText('Groceries')).toBeInTheDocument()
+    expect(within(items[1]).getByText('Bus pass')).toBeInTheDocument()
+    expect(within(items[2]).getByText('Lunch')).toBeInTheDocument()
+  })
 })

@@ -29,4 +29,44 @@ describe('parseAmount', () => {
   it('returns NaN for non-numeric input', () => {
     expect(parseAmount('abc')).toBeNaN()
   })
+
+  it('rejects hexadecimal notation', () => {
+    expect(parseAmount('0x10')).toBeNaN()
+  })
+
+  it('rejects exponent notation', () => {
+    expect(parseAmount('1e3')).toBeNaN()
+  })
+
+  it('rejects positive sign prefix', () => {
+    expect(parseAmount('+5')).toBeNaN()
+  })
+
+  it('rejects negative sign prefix', () => {
+    expect(parseAmount('-5')).toBeNaN()
+  })
+
+  it('rejects thousands separator', () => {
+    expect(parseAmount('1,000')).toBeNaN()
+  })
+
+  it('rejects more than two decimal places', () => {
+    expect(parseAmount('12.345')).toBeNaN()
+  })
+
+  it('accepts integer amounts', () => {
+    expect(parseAmount('12')).toBe(12)
+  })
+
+  it('accepts one decimal place', () => {
+    expect(parseAmount('12.5')).toBe(12.5)
+  })
+
+  it('accepts two decimal places', () => {
+    expect(parseAmount('12.50')).toBe(12.5)
+  })
+
+  it('accepts amount with surrounding whitespace', () => {
+    expect(parseAmount(' 7 ')).toBe(7)
+  })
 })

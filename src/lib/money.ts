@@ -15,7 +15,13 @@ export function formatCurrency(amount: number, currency: Currency): string {
   return `${currencySymbol(currency)}${amount.toFixed(2)}`
 }
 
+const DECIMAL_AMOUNT = /^\d+(\.\d{1,2})?$/
+
 /** Parses user input into a number; returns NaN for unparseable input. */
 export function parseAmount(input: string): number {
-  return Number(input.trim())
+  const trimmed = input.trim()
+  if (!DECIMAL_AMOUNT.test(trimmed)) {
+    return NaN
+  }
+  return Number(trimmed)
 }
